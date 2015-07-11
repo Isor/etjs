@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+
+	<meta charset="utf-8" />
+	<head>
+		<title>list</title>
+		<style type="text/css">
+
+
+		</style>
+	</head>
+	<body>
+
+			<div class="t">
+				<div eg-template style="display:none;"> 
+					<span eg-prop="name"></span>
+					<input eg-prop="password" />	
+				</div>
+
+			</div>
+
+
+			<script type="text/javascript" src="../lib/jquery-1.9.1.js"></script>
+			<script type="text/javascript" src="../et.js"></script>
+			<script type="text/javascript">
+					var array = [];
+					array.push({name:"zm",password:"123"});
+					array.push({name:"xm",password:"345"});
+
+					$et.list(array, ".t");
+
+
+
+			</script>
+
+
+	</body>	
+
+
+
+</html>
