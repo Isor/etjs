@@ -1,14 +1,5 @@
-/*
-	为什么写这个呢 ?  据说 facebook成员觉得用Angularjs不够酷, 然后创造了reactjs. 
-	我可以说我在 Angularjs 和 reactjs 中我更喜欢 Angularjs 不？ 
-	理由呢？ 我就是想简化下内容生成,用的这么招么?
-	所以, 我就自己写了一个啦.
-	说明
-	   1 Angularjs 和 Reactjs 是mvc的魔法. 我写的只是个简单的小工具.  
-	   2 Et  大家就当是童年的小玩具吧.
 
 
-*/
 (function($){
 	
 	var $param = window.$param = {};
@@ -28,6 +19,8 @@
 	var Et = { fMaps:{}} , fMaps = Et.fMaps; 
 
 
+
+
 	var $reg = window.$reg = function(path , func){
 			$assert($$.iss(path) && $$.isf(func));
 			if(fMaps[path]){
@@ -37,41 +30,60 @@
 	}
 
 	var $et = window.$et  = {};
-	$et.id = function(data,parent,filter){
-				$assert($$.iso(data));
-				if($$.isf(parent)){
-					filter = parent;
-					parent = document;
-				}				
-				for(var i in data ){
-					if( data.hasOwnProperty (i) ){						
-						var ele = $("#"+i, parent)[0];
-						if(!ele){ continue;}
-						if(ele.nodeName == "INPUT"){
-			 			 		ele.value = data[i];
-			 			 }else{
-			 			 		ele.innerHTML=data[i];
-			 			 }	
-					}
+	var set = $et.set = function(ele,value){
+			$assert(ele && ele.nodeName);
+			if(ele.nodeName == "INPUT"){
+				if(ele.type  == "checkbox" || ele.type == "radio") {
+						ele.checked = value ? true : false;	
+				}else{
+						ele.value = value;
 				}
+				
+			}else if(ele.type == "SELECT"){
+				var ops = ele.options;
+				var values = {};
+				for(var i = 0 ;i<op.length; i++){
+					values[ops[i].value] = ops[i].index +1 ;
+				}
+				if(values[value]){
+					ele.value = value;
+				}
+			}else{
+				ele.innerHTML = value;
+			}
+	}
+	/* 
+		抽取了部分代码,搞了个 类似策略的接口代码.
+	*/
+	function $etInternal(data,parent,selector, filter){			
+			$assert($$.iso(data));
+			if($$.isf(parent)){
+				filter = parent;
+				parent = document;
+			}
+			for(var i in data ){
+				if( data.hasOwnProperty (i) ){						
+					var ele = selector.call(null,i)
+					if(!ele){ continue;}
+					var valueAfterFilter =  data[i];
+					if($$.isf(filter)){
+						 valueAfterFilter = filter.call(null,data[i]);
+						 valueAfterFilter = valueAfterFilter || data[i];						 
+					}
+					
+					set(ele , valueAfterFilter);						
+				}
+			}
+	}
+	$et.id = function(data,parent,filter){			
+			$etInternal(data,parent, function(prop){
+				return $("#"+prop, parent)[0];
+			},filter);
 	};
-	$et.eg=function(data,parent,filter){
-				$assert($$.iso(data));
-				if($$.isf(parent)){
-					filter = parent;
-					parent = document;
-				}	
-				for(var i in data ){
-					if(data.hasOwnProperty(i) ){
-						var ele = $("[eg-prop="+i+"]",parent)[0];
-						if(!ele){ continue;}
-						if(ele.nodeName == "INPUT"){
-			 			 		ele.value = data[i];
-			 			 }else{
-			 			 		ele.innerHTML=data[i];
-			 			 }	
-					}
-				}
+	$et.eg=function(data,parent,filter){			
+			$etInternal(data,parent, function(prop){
+				return $("[eg-prop="+prop+"]",parent)[0];
+			},filter);
 	};
 	$et.list=function(array,target,filter){
 			 $assert(target!=null && $$.isa(array));
@@ -79,7 +91,7 @@
 			 console.log(target);
 			 if(!target){ return ;}
 			 var template =$("[eg-template]",target)[0];
-			 console.log(template);
+			
 			 if(template){
 			 	for(var i = 0 ; i < array.length ; i++){
 			 		var node = template.cloneNode();
