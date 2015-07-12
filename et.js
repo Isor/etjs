@@ -55,7 +55,7 @@
 	/* 
 		抽取了部分代码,搞了个 类似策略的接口代码.
 	*/
-	function $etInternal(data,parent,selector, filter){			
+	var $etInternal = $et.fn = (data,parent,selector, filter){			
 			$assert($$.iso(data));
 			if($$.isf(parent)){
 				filter = parent;
@@ -90,8 +90,7 @@
 			 target = $(target)[0];
 			 console.log(target);
 			 if(!target){ return ;}
-			 var template =$("[eg-template]",target)[0];
-			
+			 var template =$("[eg-template]",target)[0];			
 			 if(template){
 			 	for(var i = 0 ; i < array.length ; i++){
 			 		var node = template.cloneNode();
