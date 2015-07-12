@@ -30,6 +30,7 @@
 	}
 
 	var $et = window.$et  = {};
+	/* 元素值赋值 */
 	var set = $et.set = function(ele,value){
 			$assert(ele && ele.nodeName);
 			if(ele.nodeName == "INPUT"){
@@ -37,8 +38,7 @@
 						ele.checked = value ? true : false;	
 				}else{
 						ele.value = value;
-				}
-				
+				}				
 			}else if(ele.type == "SELECT"){
 				var ops = ele.options;
 				var values = {};
@@ -61,16 +61,16 @@
 				filter = parent;
 				parent = document;
 			}
-			for(var i in data ){
+			if($$.isf(filter)){
+				var oldData = data;
+					data = filter.call(null,data);
+					data = data || oldData;						 
+			}		
+			for(var i in data ){				
 				if( data.hasOwnProperty (i) ){						
 					var ele = selector.call(null,i)
 					if(!ele){ continue;}
-					var valueAfterFilter =  data[i];
-					if($$.isf(filter)){
-						 valueAfterFilter = filter.call(null,data[i]);
-						 valueAfterFilter = valueAfterFilter || data[i];						 
-					}
-					
+					var valueAfterFilter =  data[i];								
 					set(ele , valueAfterFilter);						
 				}
 			}
