@@ -69,20 +69,21 @@
 			for(var i in data ){				
 				if( data.hasOwnProperty (i) ){						
 					var ele = selector.call(null,i)
-					if(!ele){ continue;}
-					var valueAfterFilter =  data[i];								
-					set(ele , valueAfterFilter);						
+					if(eles.length == 0){ continue;}
+					for(var j = 0; j< eles.length; j++){
+						set(eles[j],  data[i]);
+					}							
 				}
 			}
 	}
 	$et.id = function(data,parent,filter){			
 			$etInternal(data,parent, function(prop){
-				return $("#"+prop, parent)[0];
+				return $("#"+prop, parent);
 			},filter);
 	};
 	$et.eg=function(data,parent,filter){			
 			$etInternal(data,parent, function(prop){
-				return $("[eg-prop="+prop+"]",parent)[0];
+				return $("[eg-prop="+prop+"]",parent);
 			},filter);
 	};
 	$et.list=function(array,target,filter){
